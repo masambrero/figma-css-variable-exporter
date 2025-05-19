@@ -1,5 +1,6 @@
 import { normalizeName } from './style';
 import { rgbaToHex } from './colors';
+import { LOCAL_STYLES_IDS } from 'src/constants/figma';
 
 function isVariableAlias(variable: unknown): variable is VariableAlias {
   return (
@@ -246,4 +247,22 @@ export function getFormattedVariables(variables: string[], comment?: string) {
   if (variables.length === 0) return '';
 
   return `\n${comment && `/* ${comment || ''}*/`}\n${variables.join('\n')}`;
+}
+
+export async function getLocalStylesVariables(): Promise<
+  (typeof LOCAL_STYLES_IDS)[keyof typeof LOCAL_STYLES_IDS][]
+> {
+  const hasEffectStyles = await figma.getLocalEffectStylesAsync();
+  const hasPaintStyles = await figma.getLocalPaintStylesAsync();
+
+  const hasTextStyles = await figma.getLocalTextStylesAsync();
+
+  const hasGridStyles = await figma.getLocalGridStylesAsync();
+
+  return [
+    hasEffectStyles && LOCAL_STYLES_IDS.EFFECT,
+    hasPaintStyles && LOCAL_STYLES_IDS.PAINT,
+    hasTextStyles && LOCAL_STYLES_IDS.TEXT,
+    hasGridStyles && LOCAL_STYLES_IDS.GRID,
+  ].filter(Boolean);
 }

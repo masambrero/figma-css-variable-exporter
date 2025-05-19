@@ -1,6 +1,10 @@
 import { copyToClipboard } from './helpers/copyToClipboard';
-import { FIGMA_STYLES_COLLECTION_ID } from './constants/figma';
-import { Message } from './types';
+import {
+  isInitCollectionsMessage,
+  isInitStylesMessage,
+  isExportMessage,
+} from './helpers/message';
+import { GenerateMessage } from './types';
 
 import './styles.css';
 
@@ -43,10 +47,11 @@ function clearExcept(container: HTMLElement, selector: string) {
 }
 
 function addMessageListener() {
-  window.onmessage = (e) => {
+  window.onmessage = async (e) => {
     const msg = e.data.pluginMessage;
 
-    if (msg.type === 'init-collections') {
+    if (isInitCollectionsMessage(msg)) {
+      // Init inner collections
       const container = document.querySelector<HTMLElement>('.collections');
 
       if (container) {
@@ -57,26 +62,37 @@ function addMessageListener() {
 
           container.appendChild(element);
         });
-
-        const element = createInputField(
-          FIGMA_STYLES_COLLECTION_ID,
-          FIGMA_STYLES_COLLECTION_ID
-        );
-
-        container.appendChild(element);
       }
     }
 
-    if (msg.type === 'export-result') {
+    if (isInitStylesMessage(msg)) {
+      // Init inner styles
+      const { styles } = msg;
+      const stylesContainer = document.querySelector<HTMLElement>('.styles');
+
+      if (stylesContainer) {
+        clearExcept(stylesContainer, 'legend');
+
+        for (const style of styles) {
+          const element = createInputField(style, style);
+
+          stylesContainer.appendChild(element);
+        }
+      }
+    }
+
+    if (isExportMessage(msg)) {
       const result = document.querySelector<HTMLTextAreaElement>('.result');
 
       if (!result) {
         throw new Error('No result textarea');
       }
 
-      result.value = msg.css;
+      if (msg.css) {
+        result.value = msg.css;
 
-      copyToClipboard(msg.css);
+        copyToClipboard(msg.css);
+      }
     }
   };
 }
@@ -99,9 +115,17 @@ function handleExportButtonClick() {
       throw new Error('Invalid unit');
     }
 
-    const selected = Array.from(
+    const selectedCollections = Array.from(
       document.querySelectorAll<HTMLInputElement>(
         '.collections input[type="checkbox"]'
+      )
+    )
+      .filter((element) => element.checked)
+      .map((element) => element.value);
+
+    const selectedStyles = Array.from(
+      document.querySelectorAll<HTMLInputElement>(
+        '.styles input[type="checkbox"]'
       )
     )
       .filter((element) => element.checked)
@@ -118,11 +142,12 @@ function handleExportButtonClick() {
     parent.postMessage(
       {
         pluginMessage: {
-          type: 'export',
+          type: 'generate',
           unit: unit as 'px' | 'rem',
           remValue: Number(remValue) || 16,
-          collections: selected,
-        } satisfies Message,
+          collections: selectedCollections,
+          styles: selectedStyles,
+        } satisfies GenerateMessage,
       },
       '*'
     );

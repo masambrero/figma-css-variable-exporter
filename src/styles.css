@@ -34,6 +34,8 @@ h3 {
 }
 
 .wrapper {
+  position: relative;
+  max-width: 600px;
   display: grid;
   gap: 30px;
 }
@@ -70,9 +72,9 @@ h3 {
   transform: scale(0.98);
 }
 
-.container {
-  position: relative;
-  max-width: 600px;
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .confirmation {
@@ -103,7 +105,7 @@ label {
   grid-template-columns: 16px auto;
   gap: 6px;
   font-weight: 600;
-  text-trasform: capitalize;
+  text-transform: capitalize;
 }
 
 label + label {
