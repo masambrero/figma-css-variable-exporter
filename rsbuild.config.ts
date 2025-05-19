@@ -15,6 +15,10 @@ export default defineConfig({
     title: 'CSS Variable Exporter',
     template: path.resolve(__dirname, './src/index.html'),
     inject: 'body',
+    appIcon: {
+      name: 'CSS Variable Exporter',
+      icons: [{ src: path.resolve(__dirname, './public/icon.png'), size: 192 }],
+    },
   },
   output: {
     inlineScripts: true,
