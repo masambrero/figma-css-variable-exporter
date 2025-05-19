@@ -1,14 +1,12 @@
-<p align="center">
-  <a href="https://github.com/masambrero/figma-css-variable-exporter">
-    <img src="./public/icon.png" alt="css variable exporter" />
-  </a>
-</p>
+[![Plugin preview](public/icon.png)](https://github.com/masambrero/figma-css-variable-exporter/blob/6865dc8a010c0f3d27c7989d08a9da7a037dbae9/public/icon.png)
 
 # Figma to CSS Variable Exporter
 
 ## About the plugin
 
 Figma to CSS Variable Exporter is a Figma plugin designed to seamlessly export design tokens and variables from your Figma projects into a CSS-compatible format. This facilitates a smooth integration between design systems and development environments by allowing designers and developers to maintain interface consistency through shared styling standards.
+
+[![Plugin preview](docs/preview.png)](https://github.com/masambrero/figma-css-variable-exporter/blob/6865dc8a010c0f3d27c7989d08a9da7a037dbae9/docs/preview.png)
 
 ## Features
 
