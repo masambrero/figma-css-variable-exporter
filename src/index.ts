@@ -4,7 +4,7 @@ import {
   isInitStylesMessage,
   isExportMessage,
 } from './helpers/message';
-import { GenerateMessage } from './types';
+import { GenerateMessage, Message } from './types';
 
 import './styles.css';
 
@@ -48,7 +48,7 @@ function clearExcept(container: HTMLElement, selector: string) {
 
 function addMessageListener() {
   window.onmessage = async (e) => {
-    const msg = e.data.pluginMessage;
+    const msg = e.data.pluginMessage satisfies Message;
 
     if (isInitCollectionsMessage(msg)) {
       // Init inner collections

@@ -24,3 +24,9 @@ export type InitStylesMessage = {
   type: 'init-styles';
   styles: (typeof LOCAL_STYLES_IDS)[keyof typeof LOCAL_STYLES_IDS][];
 };
+
+export type Message =
+  | ExportMessage
+  | GenerateMessage
+  | InitCollectionsMessage
+  | InitStylesMessage;

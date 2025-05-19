@@ -9,7 +9,12 @@ import {
   getLocalStylesVariables,
 } from './helpers/figma';
 import { LOCAL_STYLES_IDS } from './constants/figma';
-import { ExportMessage, GenerateMessage, InitStylesMessage } from './types';
+import {
+  ExportMessage,
+  Message,
+  InitStylesMessage,
+  InitCollectionsMessage,
+} from './types';
 
 // Show the plugin UI
 figma.showUI(__html__, { width: 800, height: 900, themeColors: true });
@@ -20,7 +25,7 @@ figma.showUI(__html__, { width: 800, height: 900, themeColors: true });
   figma.ui.postMessage({
     type: 'init-collections',
     collections: selectedCollection.map((c) => ({ id: c.id, name: c.name })),
-  });
+  } satisfies InitCollectionsMessage);
 
   const availableStyles = await getLocalStylesVariables();
 
@@ -30,7 +35,7 @@ figma.showUI(__html__, { width: 800, height: 900, themeColors: true });
   } satisfies InitStylesMessage);
 })();
 
-figma.ui.onmessage = async (msg: GenerateMessage) => {
+figma.ui.onmessage = async (msg: Message) => {
   if (msg.type !== 'generate') return;
 
   const { unit, remValue, collections: selectedIds, styles } = msg;
