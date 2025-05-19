@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>CSS variable Export</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="block">
+        <div>
+          <h3>Choose css units:</h3>
+          <label><input type="radio" name="unit" value="px" checked />px</label>
+          <label><input type="radio" name="unit" value="rem" />rem</label>
+        </div>
+        <div>
+          <h3>Choose rem size in pixels:</h3>
+          <input
+            class="fontSize"
+            type="text"
+            name="rem"
+            placeholder="rem value"
+            value="16"
+          />
+        </div>
+      </div>
+      <div class="container">
+        <fieldset class="collections">
+          <legend>Choose collections</legend>
+        </fieldset>
+      </div>
+      <div>
+        <button class="button exportButton">Generate</button>
+        <button class="button copyButton">Copy CSS</button>
+      </div>
+      <div>
+        <h2>Result CSS:</h2>
+        <div class="container">
+          <textarea
+            class="result"
+            readonly
+            placeholder="Select the collections you want to export and click Generate"
+          ></textarea>
+          <div class="confirmation hidden"><h4>Copied!</h4></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

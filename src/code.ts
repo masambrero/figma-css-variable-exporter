@@ -1,0 +1,91 @@
+import { createRootContent } from './helpers/style';
+import {
+  getGridStyleCSSVariables,
+  getTextStyleCSSVariables,
+  getEffectStyleCSSVariables,
+  getPaintStyleCSSVariables,
+  getCollectionCSSVariables,
+  getFormattedVariables,
+} from './helpers/figma';
+import { FIGMA_STYLES_COLLECTION_ID } from './constants/figma';
+import { Message } from './types';
+
+// Show the plugin UI
+figma.showUI(__html__, { width: 800, height: 900, themeColors: true });
+
+(async () => {
+  const selectedCollection =
+    await figma.variables.getLocalVariableCollectionsAsync();
+  figma.ui.postMessage({
+    type: 'init-collections',
+    collections: selectedCollection.map((c) => ({ id: c.id, name: c.name })),
+  });
+})();
+
+figma.ui.onmessage = async (msg: Message) => {
+  if (msg.type !== 'export') return;
+
+  const { unit, remValue, collections: selectedIds } = msg;
+
+  const variableCollection =
+    await figma.variables.getLocalVariableCollectionsAsync();
+
+  const selectedCollection = selectedIds.length
+    ? variableCollection.filter((c) => selectedIds.includes(c.id))
+    : variableCollection;
+  const hasStylesCollectionSelected = selectedIds.includes(
+    FIGMA_STYLES_COLLECTION_ID
+  );
+
+  let css: string = '';
+
+  for (const collection of selectedCollection) {
+    const commentName = collection.name.trim().replace(/[/\s]+/g, '_');
+
+    const collectionCSSVariables = await getCollectionCSSVariables(
+      collection,
+      unit,
+      remValue
+    );
+
+    css += getFormattedVariables(collectionCSSVariables, commentName);
+  }
+
+  if (hasStylesCollectionSelected) {
+    const paintStyleCSSVariables = await getPaintStyleCSSVariables();
+
+    css += getFormattedVariables(
+      paintStyleCSSVariables,
+      'Paint style variables'
+    );
+
+    const effectStyleCSSVariables = await getEffectStyleCSSVariables(
+      unit,
+      remValue
+    );
+    css += getFormattedVariables(
+      effectStyleCSSVariables,
+      'Effect style variables'
+    );
+
+    const textStyleCSSVariables = await getTextStyleCSSVariables(
+      unit,
+      remValue
+    );
+
+    css += getFormattedVariables(textStyleCSSVariables, 'Text style variables');
+
+    const gridStyleCSSVariables = await getGridStyleCSSVariables(
+      unit,
+      remValue
+    );
+    css += getFormattedVariables(gridStyleCSSVariables, 'Grid style variables');
+  }
+
+  const rootContent = createRootContent(css);
+
+  figma.ui.postMessage({
+    type: 'export-result',
+    css: rootContent,
+  });
+};
