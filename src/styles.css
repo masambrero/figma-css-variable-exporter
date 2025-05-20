@@ -91,7 +91,8 @@ h3 {
   color: #fff;
 }
 
-.collections {
+.collections,
+.styles {
   border: 2px solid var(--text-color);
 }
 
