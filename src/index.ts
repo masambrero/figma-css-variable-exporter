@@ -91,8 +91,10 @@ function addMessageListener() {
       if (msg.css) {
         result.value = msg.css;
 
-        copyToClipboard(msg.css);
+        return;
       }
+
+      result.value = '';
     }
   };
 }

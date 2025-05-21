@@ -46,6 +46,10 @@ h3 {
   gap: 20px;
 }
 
+.resultWrapper {
+  position: relative;
+}
+
 .result {
   width: 100%;
   height: 70%;
